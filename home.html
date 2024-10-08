@@ -29,41 +29,42 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     -->
 
-    <nav class="navbar">
-      <ul class="nav-links">
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Help/FAQ</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Login/Register</a>
-          <ul class="dropdown-menu">
-            <li><a class="login" href="#">Login</a></li>
-            <li><a class="register" href="#">Register</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-    <div id="carouselExampleFade" class="carousel slide carousel-fade">
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="https://th.bing.com/th/id/OIP.lMa3sEHBUA20V53o6J1IhwHaE8?rs=1&pid=ImgDetMain" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-          <img src="..." class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-          <img src="..." class="d-block w-100" alt="...">
-        </div>
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="#">About Us</a></li>
+      <li><a href="#">Help/FAQ</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle">Login/Register</a>
+        <ul class="dropdown-menu">
+          <li><a class="login" href="#">Login</a></li>
+          <li><a class="register" href="#">Register</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner" style="direction: ltr;">
+      <div class="carousel-item active" data-bs-interval="1000">
+        <img src="https://th.bing.com/th/id/OIP.lMa3sEHBUA20V53o6J1IhwHaE8?rs=1&pid=ImgDetMain" class="d-block w-100" alt="...">
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
+      <div class="carousel-item" data-bs-interval="1000">
+        <img src="https://th.bing.com/th/id/OIP.yqo20pxTU3tYyIVmVU89vwHaE8?rs=1&pid=ImgDetMain" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item" data-bs-interval="1000">
+        <img src="https://th.bing.com/th/id/R.61f116c6f3f7be8e7d6f3cdb5e4638d4?rik=R7H7jKHMFDJVIw&riu=http%3a%2f%2ftravelingcanucks.com%2fwp-content%2fuploads%2f2017%2f05%2fTraveling_Canucks_Travel_Photography_005.jpg&ehk=n6LBIPuKPOXJo8B4qPbgN1J5M5t4XO7QWzxI6gqCOYQ%3d&risl=1&pid=ImgRaw&r=0" class="d-block w-100" alt="...">
+      </div>
     </div>
-    <div id="login-form-container" class="form-container" style="display: none;">
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <div id="login-form-container" class="form-container" style="display: none;">
     <form>
       <label for="email">Email:</label>
       <input type="email" id="email" name="email"><br><br>
@@ -94,5 +95,6 @@
     </form>
   </div>
 </body>
- <script src="t.js"></script>
+<script src="t.js"></script>
+
 </html>
