@@ -1,0 +1,148 @@
+/* Style the navbar */
+.navbar {
+  background-color: #333;
+  padding: 1em;
+  display: flex;
+  position: fixed; /* Add this to fix the navbar to the top */
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* Add this to ensure the navbar is on top of other elements */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow to the sticky navbar */
+}
+
+/* Style the navigation links */
+.nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row-reverse; /* Change the order of the links */
+}
+
+.nav-links li {
+  margin-right: 20px;
+  position: relative; /* Add this to position the dropdown menu */
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s ease; /* Add hover animation */
+  background-color: transparent; /* Initial background color */
+}
+
+.nav-links a:hover {
+  color: #ccc;
+  background-color: #333; 
+}
+
+/* Style the dropdown menu */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  cursor: pointer; /* Add a pointer cursor on hover */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #333;
+  padding: 10px;
+  border-radius: 5px;
+  display: none; /* Hide the dropdown menu by default */
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block; /* Show the dropdown menu on hover */
+}
+
+.dropdown-menu li {
+  margin-bottom: 10px;
+}
+
+.dropdown-menu a {
+  color: #fff;
+}
+
+.dropdown-menu a:hover {
+  color: #ccc;
+}
+
+.carousel-item img {
+  height: 600px; /* adjust the height to your desired value */
+  object-fit: cover; /* make the image cover the entire area */
+  width: 100%; /* make the image take up the full width of the item */
+}
+
+
+/*forms*/
+.form-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  display: none;
+  z-index: 1000; /* Add a high z-index value to bring the form forward */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a subtle shadow effect */
+}
+
+.form-container.show {
+  display: block;
+  animation: fadeIn 0.5s; /* Add a fade-in animation */
+}
+
+.form-container.show::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Add a dark background to dim the content */
+  z-index: 999; /* Set a lower z-index value than the form container */
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Add some color and creativity to the form */
+.form-container {
+  background-image: linear-gradient(to bottom, #ff69b4, #ffe0f0); /* Add a gradient background */
+  border: 1px solid #ff69b4; /* Add a colored border */
+}
+
+.form-container h2 {
+  color: #ff69b4; /* Add a colored heading */
+}
+
+.form-container input[type="email"], .form-container input[type="password"], .form-container textarea {
+  border: 1px solid #ff69b4; /* Add a colored border to the input fields */
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.form-container input[type="submit"] {
+  background-color: #ff69b4; /* Add a colored submit button */
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.form-container input[type="submit"]:hover {
+  background-color: #ffc5c5; /* Add a hover effect to the submit button */
+}
