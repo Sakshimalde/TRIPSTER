@@ -42,28 +42,21 @@
       </li>
     </ul>
   </nav>
-  <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner" style="direction: ltr;">
-      <div class="carousel-item active" data-bs-interval="1000">
-        <img src="https://th.bing.com/th/id/OIP.lMa3sEHBUA20V53o6J1IhwHaE8?rs=1&pid=ImgDetMain" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item" data-bs-interval="1000">
-        <img src="https://th.bing.com/th/id/OIP.yqo20pxTU3tYyIVmVU89vwHaE8?rs=1&pid=ImgDetMain" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item" data-bs-interval="1000">
-        <img src="https://th.bing.com/th/id/R.61f116c6f3f7be8e7d6f3cdb5e4638d4?rik=R7H7jKHMFDJVIw&riu=http%3a%2f%2ftravelingcanucks.com%2fwp-content%2fuploads%2f2017%2f05%2fTraveling_Canucks_Travel_Photography_005.jpg&ehk=n6LBIPuKPOXJo8B4qPbgN1J5M5t4XO7QWzxI6gqCOYQ%3d&risl=1&pid=ImgRaw&r=0" class="d-block w-100" alt="...">
-      </div>
+  <div class="carousel-container">
+    <div class="carousel">
+        <div class="carousel-slide">
+            <img src="https://cdn.fodors.com/wp-content/uploads/2017/09/Road-Trips-Cabot-Trail.jpg" alt="Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="https://th.bing.com/th/id/OIP.7XVJHgvpV_zfV4Bexz7peAHaDt?w=2400&h=1200&rs=1&pid=ImgDetMain" alt="Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="https://thumbs.dreamstime.com/b/sunshine-road-single-point-perspective-down-country-highway-summer-sunny-to-anywhere-warm-day-to-drive-travel-to-anywhere-85659383.jpg" alt="Image 3">
+        </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-
+    <button class="prev" onclick="prevSlide()">&#10094;</button>
+    <button class="next" onclick="nextSlide()">&#10095;</button>
+</div>
   <div id="login-form-container" class="form-container" style="display: none;">
     <form>
       <label for="email">Email:</label>

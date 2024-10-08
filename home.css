@@ -71,11 +71,49 @@
   color: #ccc;
 }
 
-.carousel-item img {
-  height: 600px; /* adjust the height to your desired value */
-  object-fit: cover; /* make the image cover the entire area */
-  width: 100%; /* make the image take up the full width of the item */
+/* carousal */
+/* styles.css */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling */
+  height: 100%;
+  width: 100%;
 }
+
+.carousel-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100%; /* Set carousel height to 100% */
+}
+
+.carousel-slide {
+  min-width: 100%;
+  height: 100%; /* Set slide height to 100% */
+  box-sizing: border-box;
+  display: none; /* Hide all slides by default */
+}
+
+.carousel-slide.active {
+  display: block; /* Show the active slide */
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image covers the container */
+}
+
+
+/* carousal end */
 
 
 /*forms*/
