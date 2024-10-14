@@ -73,6 +73,9 @@
 
 /* carousal */
 /* styles.css */
+/* styles.css */
+
+/* styles.css */
 
 body, html {
   margin: 0;
@@ -84,22 +87,24 @@ body, html {
 
 .carousel-container {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
   overflow: hidden;
 }
 
 .carousel {
   display: flex;
   transition: transform 0.5s ease-in-out;
-  height: 100%; /* Set carousel height to 100% */
+  height: 100%; /* Set carousel height to 40% */
+  width: 100%; /* Set carousel width to 100% */
 }
 
 .carousel-slide {
-  min-width: 100%;
-  height: 100%; /* Set slide height to 100% */
+  min-width: 100%; /* Each slide takes full width */
+  height: 100%; /* Set slide height to 100% of the carousel */
   box-sizing: border-box;
   display: none; /* Hide all slides by default */
+  position: relative;
 }
 
 .carousel-slide.active {
@@ -107,10 +112,15 @@ body, html {
 }
 
 .carousel-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ensures the image covers the container */
+  width: 100%; /* Make the image fill the entire width */
+  height: 100%; /* Set height to fill the carousel slide height */
+  object-fit: cover; /* Ensures the entire image is visible */
+  background-color: #000; /* Optional: background color to fill empty spaces */
+  position: absolute;
+  top: 0;
+  left: 0;
 }
+
 
 
 /* carousal end */
