@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <!-- Profile Banner -->
+    <section class="profile-banner">
+        <div class="overlay">
+            <h1>User Profile</h1>
+        </div>
+    </section>
+
+    <!-- Profile Information Section -->
+    <main class="profile-content">
+        <section class="profile-info">
+            <img src="profile-placeholder.jpg" alt="Profile Picture" class="profile-picture">
+            <div class="info">
+                <h2>arnav</h2>
+                <p class="username">@arnav</p>
+            </div>
+            <button class="edit-button">Edit Profile</button>
+        </section>
+
+        <!-- Editable Profile Form -->
+        <form id="edit-profile-form" class="profile-form">
+            <div class="form-group">
+                <label for="full-name">Full Name:</label>
+                <input type="text" id="full-name" value="Arnav">
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" value="@arnav">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="arnav@example.com">
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" value="India">
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio:</label>
+                <textarea id="bio">This is my bio where I talk about myself.</textarea>
+            </div>
+            <button type="submit" class="save-button">Save Changes</button>
+        </form>
+    </main>
+</body>
+</html>
