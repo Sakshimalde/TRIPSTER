@@ -9,7 +9,12 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = 3000;
-const jwtSecret = '12345678910';
+// const jwtSecret = '12345678910';
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 // Middleware
@@ -46,13 +51,14 @@ app.post('/login', async (req, res) => {
     try {
         const data = req.body;
         let User = await user.findOne({ email: data.email });
-        app.get(`/dashboard/${User._id}`, (req, res) => {
-            res.sendFile('dashboard.html',{root: __dirname});
-          });
+        
         if (User) {
             if (User.password == data.password) {
-                // console.log("user id", User._id)
-                const token = jwt.sign({ id: User._id }, jwtSecret);
+                app.get(`/dashboard/${User._id}`, (req, res) => {
+                    res.sendFile('dashboard.html',{root: __dirname});
+                  });
+                req.session.userId = User._id;
+                console.log(req.session.userId)
                 return res.redirect(`http://localhost:3000/dashboard/${User._id}`);
             }
             else {
@@ -75,25 +81,37 @@ app.post('/login', async (req, res) => {
     }
 })
 app.post('/api/update-profile', async (req, res) => {
-    const { fullName, username, email, location, bio } = req.body;
+    const { fullName, username, location, bio, profilepic} = req.body;
 
     // Assume userId is obtained after login
-    const userId = req.id; // Replace with actual user ID from session or token
+    const userId =req.session.userId; // Replace with actual user ID from session or token
+    console.log(userId)
+
+    if (!userId) {
+        return res.status(401).json({ message: 'User  not authenticated' });
+    }
 
     try {
         const updatedUser  = await user.findByIdAndUpdate(userId, {
             fullName,
             username,
-            email,
-    
-            bio
+            location,
+            bio,
+            profilepic
         }, { new: true });
 
-        res.status(200).json(updatedUser);
+        if (!updatedUser ) {
+            return res.status(404).json({ message: 'User  not found' });
+        }
+
+        res.status(200).json({
+            message:"user updated"
+        } );
     } catch (error) {
         res.status(500).json({ message: 'Error updating profile', error });
     }
 });
+
 
 // Start the server
 app.listen(3000, () => {
