@@ -10,7 +10,7 @@
     <div class="signup-container">
         <h1>Create Your Account</h1>
         <p>Join Tripster and start connecting with other travelers!</p>
-        <form action="/signup" method="POST">
+        <form action="http://localhost:3000/signup" method="POST">
             <div class="input-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" required>
@@ -34,5 +34,24 @@
             <p class="signin-link">Already have an account? <a href="login.html">Login here</a></p>
         </form>
     </div>
+    <!-- <script>
+        // Optional: You can also submit the form using JavaScript
+        document.getElementById("signupForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("http://localhost:3000/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script> -->
 </body>
 </html>
