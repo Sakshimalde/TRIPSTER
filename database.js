@@ -40,12 +40,18 @@ const userSchema=mongoose.Schema(
                 return this.confirmPassword==this.password
             }
         },
+        username: { type: String, required: true, unique: true },
+        fullName: { type: String }, 
+        location: { type: String },  
+        bio: { type: String },     
+        
     }
 );
 
 userSchema.pre('save',function(){
     this.confirmPassword=undefined;
 })
+
 
 const user=mongoose.model('User',userSchema)
 module.exports = user;

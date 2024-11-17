@@ -5,9 +5,11 @@ const bcrypt = require('bcrypt');
 const user = require('./database');
 const session = require('express-session');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = 3000;
+const jwtSecret = '12345678910';
 
 app.use(express.static(path.join(__dirname, 'public')));
 // Middleware
@@ -50,8 +52,8 @@ app.post('/login', async (req, res) => {
         if (User) {
             if (User.password == data.password) {
                 // console.log("user id", User._id)
+                const token = jwt.sign({ id: User._id }, jwtSecret);
                 return res.redirect(`http://localhost:3000/dashboard/${User._id}`);
-                
             }
             else {
                 return res.json({
@@ -72,7 +74,26 @@ app.post('/login', async (req, res) => {
 
     }
 })
+app.post('/api/update-profile', async (req, res) => {
+    const { fullName, username, email, location, bio } = req.body;
 
+    // Assume userId is obtained after login
+    const userId = req.id; // Replace with actual user ID from session or token
+
+    try {
+        const updatedUser  = await user.findByIdAndUpdate(userId, {
+            fullName,
+            username,
+            email,
+    
+            bio
+        }, { new: true });
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating profile', error });
+    }
+});
 
 // Start the server
 app.listen(3000, () => {
