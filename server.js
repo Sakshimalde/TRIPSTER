@@ -83,8 +83,8 @@ app.post('/login', async (req, res) => {
 app.post('/api/update-profile', async (req, res) => {
     const { fullName, username, location, bio, profilepic} = req.body;
 
-    // Assume userId is obtained after login
-    const userId =req.session.userId; // Replace with actual user ID from session or token
+
+    const userId =req.session.userId; 
     console.log(userId)
 
     if (!userId) {
@@ -109,6 +109,27 @@ app.post('/api/update-profile', async (req, res) => {
         } );
     } catch (error) {
         res.status(500).json({ message: 'Error updating profile', error });
+    }
+});
+
+app.post('/api/user/trip', async (req, res) => {
+    const userId = req.session.userId;
+    const tripData = req.body; 
+
+    try {
+        const usertrip = await user.findById(userId);
+        if (!usertrip) {
+            return res.status(404).json({ message: 'User  not found' });
+        }
+
+        user.trips.push(tripData);
+        await usertrip.save();
+
+        res.status(201).json(usertrip);
+    } catch (error) {
+        console.error('Error adding trip details:', error.message); // Log the error message
+        console.error(error.stack); // Log the stack trace for more context
+        res.status(400).json({ message: 'Error adding trip details', error: error.message });
     }
 });
 

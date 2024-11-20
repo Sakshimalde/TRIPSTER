@@ -20,3 +20,42 @@ function updateBudgetDisplay() {
 // Event listeners for real-time updates
 minBudgetSlider.addEventListener('input', updateBudgetDisplay);
 maxBudgetSlider.addEventListener('input', updateBudgetDisplay);
+
+document.getElementById('trip-form').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const tripData = {
+        destination: document.getElementById('destination').value,
+        from: document.getElementById('from').value,
+        startDate: new Date(document.getElementById('startDate').value),
+        endDate: new Date(document.getElementById('endDate').value),
+        minBudget: parseFloat(document.getElementById('minBudget').value),
+        maxBudget: parseFloat(document.getElementById('maxBudget').value),
+        tourists: parseInt(document.getElementById('tourists').value),
+        activities: document.getElementById('activities').value.split(',') 
+    };
+ 
+
+    try {
+        const response = await fetch(`/api/user/trip`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tripData)
+        });
+       
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Trip added successfully:', result);
+        } else {
+            const error = await response.json();
+            console.log(response)
+            console.error('Error adding trip:', error);
+            
+        }
+    } catch (error) {
+        console.error('Network error:', error);
+    }
+});
