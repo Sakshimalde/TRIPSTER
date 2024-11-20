@@ -12,6 +12,17 @@ mongoose.connect(db_link)
 .catch(function(err){
     console.log(err);
 });
+const tripSchema = mongoose.Schema({
+    destination: { type: String, required: true },
+    from: { type: String, required: true },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
+    minBudget: { type: Number, required: true },
+    maxBudget: { type: Number, required: true },
+    tourists: { type: Number, required: true },
+    activities: { type: [String], required: true },
+    route: { type: String }
+});
 
 const userSchema=mongoose.Schema(
     {
@@ -44,7 +55,7 @@ const userSchema=mongoose.Schema(
         fullName: { type: String }, 
         location: { type: String },  
         bio: { type: String },     
-        
+        trips: [tripSchema] ,
     }
 );
 
