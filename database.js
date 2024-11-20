@@ -7,7 +7,7 @@ mongoose.connect(db_link)
 .then(function(db){
     console.log(db);
     console.log('db connected');
-    maxPoolSize: 500;
+   
 })
 .catch(function(err){
     console.log(err);
