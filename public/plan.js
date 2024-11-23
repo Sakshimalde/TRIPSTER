@@ -17,12 +17,12 @@ function updateBudgetDisplay() {
     maxValueDisplay.textContent = maxBudgetSlider.value.toLocaleString();
 }
 
-// Event listeners for real-time updates
+
 minBudgetSlider.addEventListener('input', updateBudgetDisplay);
 maxBudgetSlider.addEventListener('input', updateBudgetDisplay);
 
 document.getElementById('trip-form').addEventListener('submit', async function(event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); 
 
     const tripData = {
         destination: document.getElementById('destination').value,
@@ -34,10 +34,10 @@ document.getElementById('trip-form').addEventListener('submit', async function(e
         tourists: parseInt(document.getElementById('tourists').value),
         activities: document.getElementById('activities').value.split(',') 
     };
+     console.log(tripData)
  
-
     try {
-        const response = await fetch(`/api/user/trip`, {
+        const response = await fetch('/api/user/trip', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -48,7 +48,7 @@ document.getElementById('trip-form').addEventListener('submit', async function(e
 
         if (response.ok) {
             const result = await response.json();
-            console.log('Trip added successfully:', result);
+            console.log('Trip added successfully:', result,tripData);
         } else {
             const error = await response.json();
             console.log(response)
