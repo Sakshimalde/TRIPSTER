@@ -1,0 +1,27 @@
+#trip-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between cards */
+}
+
+.trip-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px; /* Set a fixed width for cards */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.trip-card:hover {
+    transform: scale(1.05); /* Scale effect on hover */
+}
+
+.trip-card h3 {
+    margin: 0 0 10px;
+}
+
+.trip-card p {
+    margin: 5px 0;
+}

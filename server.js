@@ -1,6 +1,7 @@
 // server.js
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 const user = require('./database');
 const session = require('express-session');
@@ -16,6 +17,9 @@ app.use(session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true,
+}));
+app.use(cors({
+    origin: 'http://127.0.0.1:5500' // Adjust this to your frontend's URL
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -139,13 +143,41 @@ app.post('/api/user/trip', async (req, res) => {
         }
 
         // Respond with the updated user data (optional)
-        res.status(201).json(usertrip.trips);
+        // res.status(201).json(usertrip.trips);
+        res.redirect("/api/user/trips")
     } catch (error) {
         console.error('Error adding trip details:', error.message);
         console.error(error.stack);
         res.status(400).json({ message: 'Error adding trip details', error: error.message });
     }
 });
+
+app.get('/api/user/trips', async (req, res) => {
+    const userId = req.session.userId;
+
+    if (!userId) {
+        return res.status(401).json({ message: 'User  not authenticated' });
+    }
+
+    try {
+        const userData = await user.findById(userId);
+        if (!userData || !userData.trips) {
+            return res.status(404).json({ message: 'No trips found for this user' });
+        }
+        app.get(`/trips`, (req, res) => {
+            res.sendFile('trips.html',{root: __dirname});
+          });
+        // res.redirect(`http://localhost:3000/trips`)
+        res.status(200).json(userData.trips);
+        
+        
+    } catch (error) {
+        console.error('Error fetching trips:', error.message);
+        res.status(400).json({ message: 'Error fetching trips', error: error.message });
+    }
+});
+
+
 
 
 // Start the server
