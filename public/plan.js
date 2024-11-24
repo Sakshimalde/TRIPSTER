@@ -49,6 +49,7 @@ document.getElementById('trip-form').addEventListener('submit', async function(e
         if (response.ok) {
             const result = await response.json();
             console.log('Trip added successfully:', result,tripData);
+            
         } else {
             const error = await response.json();
             console.log(response)

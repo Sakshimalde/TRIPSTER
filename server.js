@@ -144,7 +144,8 @@ app.post('/api/user/trip', async (req, res) => {
 
         // Respond with the updated user data (optional)
         // res.status(201).json(usertrip.trips);
-        res.redirect("/api/user/trips")
+        // res.redirect("/api/user/trip")
+        res.redirect("http://localhost:3000/trips.html")
     } catch (error) {
         console.error('Error adding trip details:', error.message);
         console.error(error.stack);
@@ -152,7 +153,7 @@ app.post('/api/user/trip', async (req, res) => {
     }
 });
 
-app.get('/api/user/trips', async (req, res) => {
+app.get('/api/user/trip', async (req, res) => {
     const userId = req.session.userId;
 
     if (!userId) {
