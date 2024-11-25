@@ -5,8 +5,10 @@ const bcrypt = require('bcrypt');
 const user = require('./database');
 const session = require('express-session');
 const path = require('path');
+const multer = require('multer');
 const jwt = require('jsonwebtoken');
-
+const storage = multer.memoryStorage(); // Store files in memory; you might want to adjust this
+const upload = multer({ storage: storage });
 const app = express();
 const PORT = 3000;
 // const jwtSecret = '12345678910';
@@ -80,11 +82,10 @@ app.post('/login', async (req, res) => {
 
     }
 })
-app.post('/api/update-profile', async (req, res) => {
-    const { fullName, username, location, bio, profilepic} = req.body;
+app.post('/api/update-profile', upload.single('profilePicture'), async (req, res) => {
+    const { fullName, username, location, bio } = req.body;
 
-
-    const userId =req.session.userId; 
+    const userId =req.session.userId;   
     console.log(userId)
 
     if (!userId) {
@@ -97,19 +98,22 @@ app.post('/api/update-profile', async (req, res) => {
             username,
             location,
             bio,
-            profilepic
         }, { new: true });
 
         if (!updatedUser ) {
             return res.status(404).json({ message: 'User  not found' });
         }
 
+
         res.status(200).json({
             message:"user updated"
         } );
     } catch (error) {
-        res.status(500).json({ message: 'Error updating profile', error });
+        console.error('Error updating profile', error.message); // Log the error message
+        console.error(error.stack); // Log the stack trace for more context
+        res.status(400).json({ message: 'Error updating profile', error: error.message });
     }
+    
 });
 
 app.post('/api/user/trip', async (req, res) => {
@@ -117,18 +121,28 @@ app.post('/api/user/trip', async (req, res) => {
     const tripData = req.body; 
 
     try {
-        const usertrip = await user.findById(userId);
-        if (!usertrip) {
+        
+        if (!userId) {
+            return res.status(401).json({ message: 'User  not authenticated' });
+        }
+        console.log('Trip Data:', tripData);
+        // Use findByIdAndUpdate with $push to add the tripData to the trips array
+        const usertrip  = await user.findByIdAndUpdate(
+            userId,
+            { $push: { trips: tripData } }, // Push the new trip data
+            { new: true } 
+        );
+
+        // Check if the user was found
+        if (!usertrip ) {
             return res.status(404).json({ message: 'User  not found' });
         }
 
-        user.trips.push(tripData);
-        await usertrip.save();
-
-        res.status(201).json(usertrip);
+        // Respond with the updated user data (optional)
+        res.status(201).json(usertrip.trips);
     } catch (error) {
-        console.error('Error adding trip details:', error.message); // Log the error message
-        console.error(error.stack); // Log the stack trace for more context
+        console.error('Error adding trip details:', error.message);
+        console.error(error.stack);
         res.status(400).json({ message: 'Error adding trip details', error: error.message });
     }
 });
