@@ -197,6 +197,28 @@ app.get('/api/user/trip', async (req, res) => {
     }
 });
 
+app.get('/api/user/getalltrips',async(req, res)=>{
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(401).json({ message: 'User  not authenticated' });
+    }
+    try {
+        // Find all users except the logged-in user
+        const users = await user.find({ _id: { $ne: userId } }).populate('trips');
+
+        // Extract trips from each user
+        const trips = users.map(user => ({
+            userId: user._id,
+            userName: user.name, // or whichever field you want to show
+            trips: user.trips
+        }));
+
+        res.status(200).json(trips);
+    } catch (error) {
+        console.error('Error fetching all trips:', error.message);
+        res.status(400).json({ message: 'Error fetching all trips', error: error.message });
+    }
+});
 
 
 
