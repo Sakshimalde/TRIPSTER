@@ -54,17 +54,30 @@
                 const card = document.createElement('div');
                 card.className = 'trip-card'; // Add a class for styling
 
-                // Assuming each trip has properties like title, date, and description
+                // Updated HTML for each trip card
                 card.innerHTML = `
-        <h3>Trip Details</h3>
-        <p><strong>Destination:</strong> ${trip.destination}</p>
-        <p><strong>From:</strong> ${trip.from}</p>
-        <p><strong>Start Date:</strong> ${trip.startDate}</p>
-        <p><strong>End Date:</strong> ${trip.endDate}</p>
-        <p><strong>Budget:</strong> ${trip.minBudget} - ${trip.maxBudget}</p>
-        <p><strong>Number of Tourists:</strong> ${trip.tourists}</p>
-        <p><strong>Activities:</strong> ${trip.activities.join(', ')}</p>
-    `;
+                    <div class="trip-details">
+                        <h3>Trip Details</h3>
+                        <p><strong>Destination:</strong> ${trip.destination}</p>
+                        <p><strong>From:</strong> ${trip.from}</p>
+                        <p><strong>Start Date:</strong> ${trip.startDate}</p>
+                        <p><strong>End Date:</strong> ${trip.endDate}</p>
+                        <p><strong>Budget:</strong> $${trip.minBudget} - $${trip.maxBudget}</p>
+                        <p><strong>Number of Tourists:</strong> ${trip.tourists}</p>
+                        <p><strong>trip id:</strong> ${trip._id}</p>
+                        <p><strong>Activities:</strong> ${trip.activities.join(', ')}</p>
+                    </div>
+                    <div class="trip-actions">
+                        <button class="action-button find-match" data-trip-id="${trip._id}" data-trip-details='${JSON.stringify(trip)}'>Find a Match</button>
+                        <button class="action-button edit-trip">Edit Trip</button>
+                    </div>
+                `;
+                const findMatchButton = card.querySelector('.find-match');
+                findMatchButton.addEventListener('click', function() {
+                    const tripDetails = JSON.parse(this.getAttribute('data-trip-details'));
+                    console.log(`Trip ID: ${tripDetails._id}\nDestination: ${tripDetails.destination}\nFrom: ${tripDetails.from}\nStart Date: ${tripDetails.startDate}\nEnd Date: ${tripDetails.endDate}\nBudget: $${tripDetails.minBudget} - $${tripDetails.maxBudget}\nNumber of Tourists: ${tripDetails.tourists}\nActivities: ${tripDetails.activities.join(', ')}`);
+                
+                });
 
                 tripContainer.appendChild(card); // Append the card to the container
             });

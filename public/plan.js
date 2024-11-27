@@ -60,3 +60,4 @@ document.getElementById('trip-form').addEventListener('submit', async function(e
         console.error('Network error:', error);
     }
 });
+
