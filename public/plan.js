@@ -27,10 +27,10 @@ document.getElementById('trip-form').addEventListener('submit', async function(e
     const tripData = {
         destination: document.getElementById('destination').value,
         from: document.getElementById('from').value,
-        startDate: new Date(document.getElementById('startDate').value),
-        endDate: new Date(document.getElementById('endDate').value),
-        minBudget: parseFloat(document.getElementById('minBudget').value),
-        maxBudget: parseFloat(document.getElementById('maxBudget').value),
+        startDate: new Date(document.getElementById('start-date').value),
+        endDate: new Date(document.getElementById('end-date').value),
+        minBudget: parseFloat(document.getElementById('min-budgett').value),
+        maxBudget: parseFloat(document.getElementById('max-budget').value),
         tourists: parseInt(document.getElementById('tourists').value),
         activities: document.getElementById('activities').value.split(',') 
     };
@@ -49,6 +49,7 @@ document.getElementById('trip-form').addEventListener('submit', async function(e
         if (response.ok) {
             const result = await response.json();
             console.log('Trip added successfully:', result,tripData);
+            
         } else {
             const error = await response.json();
             console.log(response)

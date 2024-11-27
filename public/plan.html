@@ -16,8 +16,8 @@
             <!-- Destination Dropdown -->
             <label for="destination">Destination:</label>
             <select id="destination" name="destination">
-                <option value="manali" >Select Destination</option>
-                <option value="nsjkx" >Select Destination</option>
+                <option value="gujrat" >gujrat</option>
+                <option value="new delhi" >new delhi</option>
                 <option value="nscj" disabled selected>Select Destination</option>
                 <!-- Dynamic options populated by an API -->
             </select>
@@ -25,25 +25,25 @@
             <!-- Starting Location Dropdown -->
             <label for="from">From:</label>
             <select id="from" name="from">
-                <option value="nmnzs">Select Starting Location</option>
-                <option value="szskj">Select Starting Location</option>
+                <option value="delhi">delhi</option>
+                <option value="mumbai">mumbai</option>
                 <option value="szxskj" disabled selected>Select Starting Location</option>
                 <!-- Dynamic options populated by an API -->
             </select>
 
             <!-- Start Date -->
             <label for="start-date">Start Date:</label>
-            <input type="date" id="start-date" name="start-date">
+            <input type="date" id="start-date" name="startDate">
 
             <!-- End Date -->
             <label for="end-date">End Date:</label>
-            <input type="date" id="end-date" name="end-date">
+            <input type="date" id="end-date" name="endDate">
 
             <!-- Budget Range Slider -->
             <label for="budget">Budget (Rs):</label>
             <div class="budget-range">
-                <input type="range" id="min-budget" name="min-budget" min="0" max="500000" value="10000" step="5000">
-                <input type="range" id="max-budget" name="max-budget" min="0" max="500000" value="100000" step="5000">
+                <input type="range" id="min-budget" name="minBudget" min="0" max="500000" value="10000" step="5000">
+                <input type="range" id="max-budget" name="maxBudget" min="0" max="500000" value="100000" step="5000">
             </div>
             <div class="budget-display">
                 <span>Min Budget: Rs <span id="min-value">10,000</span></span>
