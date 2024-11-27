@@ -68,8 +68,8 @@
                         <p><strong>Activities:</strong> ${trip.activities.join(', ')}</p>
                     </div>
                     <div class="trip-actions">
-                        <button class="action-button find-match" data-trip-id="${trip._id}" data-trip-details='${JSON.stringify(trip)}'>Find a Match</button>
-                        <button class="action-button edit-trip">Edit Trip</button>
+                        <button class="action-button find-match" data-trip-id="${trip._id}" data-trip-details='${JSON.stringify(trip)}'><a href="matched.html">Find a Match</a></button>
+                        <button class="action-button edit-trip"><a href="plan.html">Edit Trip</a></button>
                     </div>
                 `;
                 const findMatchButton = card.querySelector('.find-match');
