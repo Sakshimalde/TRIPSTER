@@ -11,6 +11,8 @@ const jwt = require('jsonwebtoken');
 const storage = multer.memoryStorage(); // Store files in memory; you might want to adjust this
 const upload = multer({ storage: storage });
 const app = express();
+const bodyParser = require('body-parser');
+const { parseISO, isWithinInterval } = require('date-fns');
 const PORT = 3000;
 // const jwtSecret = '12345678910';
 app.use(session({
@@ -21,6 +23,7 @@ app.use(session({
 app.use(cors({
     origin: 'http://127.0.0.1:5500' // Adjust this to your frontend's URL
 }));
+app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 // Middleware
@@ -57,12 +60,12 @@ app.post('/login', async (req, res) => {
     try {
         const data = req.body;
         let User = await user.findOne({ email: data.email });
-        
+
         if (User) {
             if (User.password == data.password) {
                 app.get(`/dashboard/${User._id}`, (req, res) => {
-                    res.sendFile('dashboard.html',{root: __dirname});
-                  });
+                    res.sendFile('dashboard.html', { root: __dirname });
+                });
                 req.session.userId = User._id;
                 console.log(req.session.userId)
                 return res.redirect(`http://localhost:3000/dashboard/${User._id}`);
@@ -79,9 +82,9 @@ app.post('/login', async (req, res) => {
             })
         }
     }
-    catch(err) {
+    catch (err) {
         return res.json({
-            message:err.message
+            message: err.message
         })
 
     }
@@ -89,7 +92,7 @@ app.post('/login', async (req, res) => {
 app.post('/api/update-profile', upload.single('profilePicture'), async (req, res) => {
     const { fullName, username, location, bio } = req.body;
 
-    const userId =req.session.userId;   
+    const userId = req.session.userId;
     console.log(userId)
 
     if (!userId) {
@@ -97,27 +100,27 @@ app.post('/api/update-profile', upload.single('profilePicture'), async (req, res
     }
 
     try {
-        const updatedUser  = await user.findByIdAndUpdate(userId, {
+        const updatedUser = await user.findByIdAndUpdate(userId, {
             fullName,
             username,
             location,
             bio,
         }, { new: true });
 
-        if (!updatedUser ) {
+        if (!updatedUser) {
             return res.status(404).json({ message: 'User  not found' });
         }
 
 
         res.status(200).json({
-            message:"user updated"
-        } );
+            message: "user updated"
+        });
     } catch (error) {
         console.error('Error updating profile', error.message); // Log the error message
         console.error(error.stack); // Log the stack trace for more context
         res.status(400).json({ message: 'Error updating profile', error: error.message });
     }
-    
+
 });
 
 app.get('/api/user/profile', async (req, res) => {
@@ -143,23 +146,23 @@ app.get('/api/user/profile', async (req, res) => {
 
 app.post('/api/user/trip', async (req, res) => {
     const userId = req.session.userId;
-    const tripData = req.body; 
+    const tripData = req.body;
 
     try {
-        
+
         if (!userId) {
             return res.status(401).json({ message: 'User  not authenticated' });
         }
         console.log('Trip Data:', tripData);
         // Use findByIdAndUpdate with $push to add the tripData to the trips array
-        const usertrip  = await user.findByIdAndUpdate(
+        const usertrip = await user.findByIdAndUpdate(
             userId,
             { $push: { trips: tripData } }, // Push the new trip data
-            { new: true } 
+            { new: true }
         );
 
         // Check if the user was found
-        if (!usertrip ) {
+        if (!usertrip) {
             return res.status(404).json({ message: 'User  not found' });
         }
 
@@ -186,18 +189,18 @@ app.get('/api/user/trip', async (req, res) => {
             return res.status(404).json({ message: 'No trips found for this user' });
         }
         app.get(`/trips`, (req, res) => {
-            res.sendFile('trips.html',{root: __dirname});
-          });
+            res.sendFile('trips.html', { root: __dirname });
+        });
         res.status(200).json(userData.trips);
-        
-        
+
+
     } catch (error) {
         console.error('Error fetching trips:', error.message);
         res.status(400).json({ message: 'Error fetching trips', error: error.message });
     }
 });
 
-app.get('/api/user/getalltrips',async(req, res)=>{
+app.get('/api/user/getalltrips', async (req, res) => {
     const userId = req.session.userId;
     if (!userId) {
         return res.status(401).json({ message: 'User  not authenticated' });
@@ -206,20 +209,120 @@ app.get('/api/user/getalltrips',async(req, res)=>{
         // Find all users except the logged-in user
         const users = await user.find({ _id: { $ne: userId } }).populate('trips');
 
-        // Extract trips from each user
-        const trips = users.map(user => ({
-            userId: user._id,
-            userName: user.name, // or whichever field you want to show
-            trips: user.trips
-        }));
+        // // Extract trips from each user
+        // const trips = users.map(user => ({
+        //     userId: user._id,
+        //     userName: user.name, // or whichever field you want to show
+        //     trips: user.trips
+        // }));
 
-        res.status(200).json(trips);
+        res.status(200).json(users);
     } catch (error) {
         console.error('Error fetching all trips:', error.message);
         res.status(400).json({ message: 'Error fetching all trips', error: error.message });
     }
 });
 
+// Modified find-matches endpoint
+app.post('/find-matches', async (req, res) => {
+    const currentTrip = req.body;
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(401).json({ message: 'User  not authenticated' });
+    }
+
+    if (!currentTrip) {
+        return res.status(400).json({ error: 'Invalid input' });
+    }
+
+    try {
+        // Fetch all users except the logged-in user
+        const targetUsers = await user.find({ _id: { $ne: userId } }).populate('trips');
+        const matches = findMatches(currentTrip, targetUsers);
+        return res.json({ matches });
+    } catch (error) {
+        console.error('Error fetching matches:', error.message);
+        console.error(error.stack);
+        return res.status(500).json({ error: 'Error fetching matches' });
+    }
+});
+
+
+// Matchmaking function
+function findMatches(currentTrip, targetUsers, daysTolerance = 3) {
+    const matches = [];
+
+    targetUsers.forEach(targetUser => {
+        let score = 0; // Initialize score for each user
+            // Check each field and increment score based on matches
+            targetUser.trips.forEach(targetTrip => {
+                const targetStartDate = targetTrip.startDate instanceof Date 
+                ? targetTrip.startDate.toISOString() 
+                : targetTrip.startDate; 
+                if (!currentTrip.currentTrip.startDate || !targetStartDate){
+                    console.log(currentTrip.currentTrip)
+                    console.log('Skipping due to undefined dates:', currentTrip.startDate, targetTrip.startDate);
+
+                    return; } // Skip if dates are undefined
+                // Check each field and increment score based on matches
+                
+                if (isDateNearby(currentTrip.currentTrip.startDate,targetStartDate, daysTolerance)) {
+                    score += 1; // Increment score for date match
+                    console.log(`Date match found. Score: ${score}`);
+                }
+                // Add similar checks for other properties like destination and activities
+           
+            if (isDestinationMatch(currentTrip.currentTrip.destination, targetTrip.destination)) {
+                score += 1; // Increment score for destination match
+                console.log(`Destination match found. Score: ${score}`);
+            }
+            if (isActivityInterest(currentTrip.currentTrip.activities, targetTrip.activities)) {
+                score += 1; // Increment score for activity interest
+                console.log(`Activity interest match found. Score: ${score}`);
+            }
+            if (isBudgetCompatible(currentTrip.currentTrip.minBudget, targetTrip.minBudget)) {
+                score += 1; // Increment score for budget compatibility
+                console.log(`Budget compatibility match found. Score: ${score}`);
+            }
+        });
+
+        // Only add users with a score greater than 0
+        if (score > 0) {
+            matches.push({ user: targetUser, score });
+            console.log(`User  ${targetUser ._id} added to matches with score: ${score}`);
+        }
+    });
+
+    // Sort matches in descending order based on score
+    matches.sort((a, b) => b.score - a.score);
+    console.log(`Final matches: ${JSON.stringify(matches)}`);
+    return matches;
+}
+
+function isDateNearby(date1, date2, daysTolerance) {
+    console.log('Date1:', date1, 'Type:', typeof date1);
+    console.log('Date2:', date2, 'Type:', typeof date2);
+    if (!date1 || !date2) return false; // Ensure both dates are defined
+
+    const date1Obj = parseISO(date1 || '1970-01-01');
+    const date2Obj = parseISO(date2 || '1970-01-01');
+    return isWithinInterval(date1Obj, {
+        start: date2Obj - daysTolerance * 24 * 60 * 60 * 1000,
+        end: date2Obj + daysTolerance * 24 * 60 * 60 * 1000
+    });
+}
+
+function isDestinationMatch(dest1, dest2) {
+    return dest1.toLowerCase() === dest2.toLowerCase();
+}
+
+function isActivityInterest(activities1, activities2) {
+    return activities1.some(activity => activities2.includes(activity));
+}
+
+function isBudgetCompatible(budget1, budget2) {
+    return Math.abs(budget1 - budget2) <= 100; // Example threshold
+}
 
 
 // Start the server
