@@ -77,7 +77,8 @@
                     const tripDetails = JSON.parse(this.getAttribute('data-trip-details'));
                     console.log(`Trip ID: ${tripDetails._id}\nDestination: ${tripDetails.destination}\nFrom: ${tripDetails.from}\nStart Date: ${tripDetails.startDate}\nEnd Date: ${tripDetails.endDate}\nBudget: ${tripDetails.minBudget} - ${tripDetails.maxBudget}\nNumber of Tourists: ${tripDetails.tourists}\nActivities: ${tripDetails.activities.join(', ')}`);
                     sendtrips(tripDetails)
-                    // window.location.href = "http://localhost:3000/find-matches";
+                    
+                    // window.location.href = "http://localhost:3000/match.html";
                 });
 
                 tripContainer.appendChild(card); // Append the card to the container
@@ -97,10 +98,14 @@
             });
 
             const data = await response.json();
-            console.log(data);
+            console.log("matches:",data);
+            // Store the matches in local storage
+            localStorage.setItem('tripMatches', JSON.stringify(data.matches));
+            // Redirect to the matches page
+            window.location.href = "http://localhost:3000/match";
+            
         }
-
-        // Call the fetch Trips function when the page loads
+            // Call the fetch Trips function when the page loads
         window.onload = fetchTrips;
     </script>
 </body>

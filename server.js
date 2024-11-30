@@ -33,9 +33,12 @@ app.get('/signup', (req, res) => {
     // Handle the signup request here
     res.send('Signup page');
 });
+app.get(`/loginpage`, (req, res) => {
+    res.sendFile('login.html', { root: __dirname });
+});
 // Route for handling signup
 app.post('/signup', async (req, res) => {
-    const { name, email, password, confirmPassword } = req.body;
+    const { name, email, password, confirmPassword} = req.body;
     const newUser = new user({
         name,
         email,
@@ -45,9 +48,11 @@ app.post('/signup', async (req, res) => {
 
     try {
         await newUser.save();
-        res.status(201).send('User  created successfully!');
+        return res.redirect(`http://localhost:3000/loginpage`);
+        // res.status(201).send('User  created successfully!');
     } catch (error) {
         if (error.code === 11000) {
+            console.error(error.stack)
             return res.status(400).send('Email already exists.');
         }
         res.status(500).send('Error creating user: ' + error.message);
@@ -222,7 +227,9 @@ app.get('/api/user/getalltrips', async (req, res) => {
         res.status(400).json({ message: 'Error fetching all trips', error: error.message });
     }
 });
-
+app.get(`/match`, (req, res) => {
+    res.sendFile('match.html', { root:path.join(__dirname) });
+});
 // Modified find-matches endpoint
 app.post('/find-matches', async (req, res) => {
     const currentTrip = req.body;
@@ -239,7 +246,31 @@ app.post('/find-matches', async (req, res) => {
         // Fetch all users except the logged-in user
         const targetUsers = await user.find({ _id: { $ne: userId } }).populate('trips');
         const matches = findMatches(currentTrip, targetUsers);
-        return res.json({ matches });
+        return res.json({matches});
+        // return res.redirect("/match")
+    } catch (error) {
+        console.error('Error fetching matches:', error.message);
+        console.error(error.stack);
+        return res.status(500).json({ error: 'Error fetching matches' });
+    }
+});
+app.get('/find-matches', async (req, res) => {
+    const currentTrip = req.body;
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(401).json({ message: 'User  not authenticated' });
+    }
+
+    if (!currentTrip) {
+        return res.status(400).json({ error: 'Invalid input' });
+    }
+
+    try {
+        // Fetch all users except the logged-in user
+        const targetUsers = await user.find({ _id: { $ne: userId } }).populate('trips');
+        const matches = findMatches(currentTrip, targetUsers);
+        return res.json({matches});
+        
     } catch (error) {
         console.error('Error fetching matches:', error.message);
         console.error(error.stack);
@@ -248,19 +279,20 @@ app.post('/find-matches', async (req, res) => {
 });
 
 
+
 // Matchmaking function
 function findMatches(currentTrip, targetUsers, daysTolerance = 3) {
     const matches = [];
 
     targetUsers.forEach(targetUser => {
-        let score = 0; // Initialize score for each user
+         // Initialize score for each user
             // Check each field and increment score based on matches
             targetUser.trips.forEach(targetTrip => {
+                let score = 0;
                 const targetStartDate = targetTrip.startDate instanceof Date 
                 ? targetTrip.startDate.toISOString() 
                 : targetTrip.startDate; 
                 if (!currentTrip.currentTrip.startDate || !targetStartDate){
-                    console.log(currentTrip.currentTrip)
                     console.log('Skipping due to undefined dates:', currentTrip.startDate, targetTrip.startDate);
 
                     return; } // Skip if dates are undefined
@@ -284,13 +316,36 @@ function findMatches(currentTrip, targetUsers, daysTolerance = 3) {
                 score += 1; // Increment score for budget compatibility
                 console.log(`Budget compatibility match found. Score: ${score}`);
             }
+            if (score > 0) {
+                let userExists = false;
+            
+                // Check if targetUser  is already in matches
+                for (let i = 0; i < matches.length; i++) {
+                    if (matches[i].user === targetUser ) {
+                        userExists = true;
+            
+                        // Update the score if the current score is higher
+                        if (matches[i].score < score) {
+                            matches[i].score = score; // Update the score
+                            
+                        }
+                        break; // Exit the loop since we found the user
+                    }
+                }
+            
+                // If the user does not exist, add them to matches
+                if (!userExists) {
+                    matches.push({ user: targetUser , score });
+                }
+            }
+            // if (score > 0) {
+            //     if(targetUser!= matches.user)
+            //     matches.push({ user: targetUser, score });
+            //     console.log(`User  ${targetUser ._id} added to matches with score: ${score}`);
+            // }
         });
 
         // Only add users with a score greater than 0
-        if (score > 0) {
-            matches.push({ user: targetUser, score });
-            console.log(`User  ${targetUser ._id} added to matches with score: ${score}`);
-        }
     });
 
     // Sort matches in descending order based on score

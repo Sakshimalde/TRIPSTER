@@ -51,7 +51,7 @@ const userSchema=mongoose.Schema(
                 return this.confirmPassword==this.password
             }
         },
-        username: { type: String, required: true, unique: true },
+        username: { type: String},
         fullName: { type: String }, 
         location: { type: String },  
         bio: { type: String },     
