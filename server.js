@@ -7,19 +7,28 @@ const user = require('./database');
 const session = require('express-session');
 const path = require('path');
 const multer = require('multer');
-const jwt = require('jsonwebtoken');
-const storage = multer.memoryStorage(); // Store files in memory; you might want to adjust this
-const upload = multer({ storage: storage });
+const jwt = require('jsonwebtoken');// Store files in memory; you might want to adjust this
 const app = express();
 const bodyParser = require('body-parser');
 const { parseISO, isWithinInterval } = require('date-fns');
 const PORT = 3000;
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Specify the uploads directory
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname); // Append timestamp to the filename
+    }
+});
+const upload = multer({ storage: storage });
 // const jwtSecret = '12345678910';
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true,
 }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(cors({
     origin: 'http://127.0.0.1:5500' // Adjust this to your frontend's URL
 }));
@@ -95,10 +104,10 @@ app.post('/login', async (req, res) => {
     }
 })
 app.post('/api/update-profile', upload.single('profilePicture'), async (req, res) => {
-    const { fullName, username, location, bio } = req.body;
-
+    const { fullName, username, location, bio, profilePicture } = req.body;
+    
     const userId = req.session.userId;
-    console.log(userId)
+    console.log(req.file)
 
     if (!userId) {
         return res.status(401).json({ message: 'User  not authenticated' });
@@ -110,6 +119,7 @@ app.post('/api/update-profile', upload.single('profilePicture'), async (req, res
             username,
             location,
             bio,
+            profilePicture:req.file.path,
         }, { new: true });
 
         if (!updatedUser) {
@@ -136,7 +146,7 @@ app.get('/api/user/profile', async (req, res) => {
     }
 
     try {
-        const userData = await user.findById(userId).select('fullName username location bio'); // Select only the fields you need
+        const userData = await user.findById(userId).select('fullName username location bio profilePicture'); // Select only the fields you need
 
         if (!userData) {
             return res.status(404).json({ message: 'User  not found' });

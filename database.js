@@ -54,7 +54,8 @@ const userSchema=mongoose.Schema(
         username: { type: String},
         fullName: { type: String }, 
         location: { type: String },  
-        bio: { type: String },     
+        bio: { type: String }, 
+        profilePicture:{type: String},
         trips: [tripSchema] ,
     }
 );
