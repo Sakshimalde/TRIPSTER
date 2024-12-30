@@ -51,6 +51,10 @@ const userSchema=mongoose.Schema(
                 return this.confirmPassword==this.password
             }
         },
+        friends: [{
+            userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User ', required: true },
+            name: { type: String, required: true }
+          }],
         username: { type: String},
         fullName: { type: String }, 
         location: { type: String },  
@@ -64,6 +68,16 @@ userSchema.pre('save',function(){
     this.confirmPassword=undefined;
 })
 
+const friendRequestSchema = new mongoose.Schema({
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+    recipient: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+    senderUsername: { type: String, required: true }, // Add sender's username
+    recipientUsername: { type: String, required: true },
+    status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' }
+  }, { timestamps: true });
+  
+  const FriendRequest = mongoose.model('FriendRequest', friendRequestSchema);
+  
 
 const user=mongoose.model('User',userSchema)
-module.exports = user;
+module.exports = {user, FriendRequest};

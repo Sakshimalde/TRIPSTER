@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const user = require('./database');
+const {user, FriendRequest} = require('./database');
 const session = require('express-session');
 const path = require('path');
 const multer = require('multer');
@@ -45,6 +45,9 @@ app.get('/signup', (req, res) => {
 app.get(`/loginpage`, (req, res) => {
     res.sendFile('login.html', { root: __dirname });
 });
+
+
+
 // Route for handling signup
 app.post('/signup', async (req, res) => {
     const { name, email, password, confirmPassword} = req.body;
@@ -105,7 +108,6 @@ app.post('/login', async (req, res) => {
 })
 app.post('/api/update-profile', upload.single('profilePicture'), async (req, res) => {
     const { fullName, username, location, bio, profilePicture } = req.body;
-    
     const userId = req.session.userId;
     console.log(req.file)
 
@@ -388,6 +390,121 @@ function isActivityInterest(activities1, activities2) {
 function isBudgetCompatible(budget1, budget2) {
     return Math.abs(budget1 - budget2) <= 100; // Example threshold
 }
+
+app.post('/send-request', async (req, res) => {
+    const senderId = req.session.userId;
+    try {
+      const {recipientId,receivername} = req.body;
+      const sender = await user.findById(senderId);
+        if (!sender) {
+            return res.status(404).json({ message: 'Sender not found' });
+        }
+
+        // Create a new friend request
+        const newRequest = new FriendRequest({
+            sender: senderId,
+            recipient: recipientId,
+            senderUsername: sender.username,
+            recipientUsername: receivername // Use the sender's username
+        });
+      await newRequest.save();
+      res.status(201).json({ message: 'Friend request sent' });
+    } catch (error) {
+        console.error(error.stack)
+      res.status(500).json({ message: 'Error sending friend request' });
+    }
+  });
+  // Get friend requests for a user
+  app.get('/requests', async (req, res) => {
+    const sendId = req.session.userId;
+    console.log("userid",sendId)
+    if (!mongoose.Types.ObjectId.isValid(sendId)) {
+        console.log("invalid")
+        return res.status(400).json({ message: 'Invalid user ID format' });
+    }
+
+    try {
+      const requests = await FriendRequest.find({ recipient: sendId, status: 'pending' })
+    console.log(requests)
+      res.json(requests);
+      
+    } catch (error) {
+        console.error(error.stack)
+      res.status(500).json({ message: 'Error fetching friend requests' });
+    }
+  });
+  
+  // Accept a friend request
+  app.post('/accept-request', async (req, res) => {
+    const userid = req.session.userId;
+    try {
+      const { requestId} = req.body;
+      const request = await FriendRequest.findById(requestId);
+      if (!request) {
+        return res.status(404).json({ message: 'Request not found' });
+      }
+      request.status = 'accepted';
+      await request.save();
+      // Find the sender and recipient users
+    const sender = await user.findById(request.sender); // Find sender by ID
+    const recipient = await user.findById(request.recipient); // Find recipient by ID
+      console.log(recipient.username)
+    if (!sender || !recipient) {
+      return res.status(404).json({ message: 'User  not found' }); // Handle case where users are not found
+    }
+      await user.findByIdAndUpdate(request.sender, { $addToSet: { friends: {userId: recipient._id,name: recipient.name} } });
+      await user.findByIdAndUpdate(request.recipient, { $addToSet: { friends: {userId: sender._id,name: sender.name} } });
+      res.json({ message: 'Friend request accepted' });
+    } catch (error) {
+        console.error(error.stack)
+      res.status(500).json({ message: 'Error accepting friend request' });
+    }
+  });
+  
+  // Reject a friend request
+  app.post('/reject-request', async (req, res) => {
+    try {
+      const { requestId } = req.body;
+      await FriendRequest.findByIdAndUpdate(requestId, { status: 'rejected' });
+      res.json({ message: 'Friend request rejected' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error rejecting friend request' });
+    }
+  });
+
+  // Route to get friends of a user
+app.get('/friends', async (req, res) => {
+    const userId = req.session.userId; // Get userId from request parameters
+
+    try {
+        // Find the user by ID and populate the friends field
+        const userWithFriends = await user.findById(userId).populate('friends', 'username');
+
+        if (!userWithFriends) {
+            return res.status(404).json({ message: 'User  not found' });
+        }
+
+        // Send the list of friends
+        res.status(200).json(userWithFriends.friends);
+    } catch (error) {
+        console.error('Error fetching friends:', error.message);
+        res.status(500).json({ message: 'Error fetching friends', error: error.message });
+    }
+});
+  
+  // Disconnect a friend
+  app.post('/disconnect', async (req, res) => {
+    const userId = req.session.userId;
+    try {
+      const friendId= req.body;
+      await user.findByIdAndUpdate(userId, { $pull: { friends: friendId } });
+      await user.findByIdAndUpdate(friendId, { $pull: { friends: userId } });
+      res.json({ message: 'Friend disconnected' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error disconnecting friend' });
+    }
+  });
+  
 
 
 // Start the server

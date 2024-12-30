@@ -102,3 +102,38 @@ body {
 .card a:hover {
     text-decoration: underline;
 }
+
+
+
+#requestsContainer {
+    width: 300px; /* Set a width for the container */
+    height: 100%; /* Set height to 100% to occupy full height of the viewport */
+    max-height: 100vh; /* Set a maximum height to the viewport height */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1); /* Shadow on the left side */
+    z-index: 10000; /* Set z-index to ensure it appears above all other elements */
+    background: white; /* Ensure background is white for visibility */
+    position: fixed; /* Fix the position to the right side */
+    top: 0; /* Align to the top of the viewport */
+    right: 0; /* Align to the right side of the viewport */
+}
+
+
+#requestsList {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+#requestsList li {
+    padding: 10px; /* Add padding to each request */
+    border-bottom: 1px solid #eee; /* Add a bottom border */
+}
+
+#requestsList li:last-child {
+    border-bottom: none; /* Remove border from the last item */
+}
+
+button {
+    margin-left: 10px; /* Add some space between buttons */
+}
