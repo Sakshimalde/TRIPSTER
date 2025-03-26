@@ -22,7 +22,6 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
-// const jwtSecret = '12345678910';
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
@@ -42,8 +41,8 @@ app.get('/signup', (req, res) => {
     // Handle the signup request here
     res.send('Signup page');
 });
-app.get(`/loginpage`, (req, res) => {
-    res.sendFile('login.html', { root: __dirname });
+app.get('/loginpage', (req, res) => {
+    res.sendFile('/login.html', { root: __dirname });
 });
 
 
@@ -60,7 +59,7 @@ app.post('/signup', async (req, res) => {
 
     try {
         await newUser.save();
-        return res.redirect(`http://localhost:3000/loginpage`);
+        return res.redirect('http://localhost:3000/loginpage');
         // res.status(201).send('User  created successfully!');
     } catch (error) {
         if (error.code === 11000) {
@@ -70,8 +69,15 @@ app.post('/signup', async (req, res) => {
         res.status(500).send('Error creating user: ' + error.message);
     }
 });
-
-
+app.get('/logout', (req, res) => {
+    // Clear the session or authentication token
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).send('Failed to log out');
+        }
+        return res.redirect('http://localhost:3000/loginpage');
+    });
+});
 
 app.post('/login', async (req, res) => {
     try {
@@ -106,8 +112,20 @@ app.post('/login', async (req, res) => {
 
     }
 })
+app.get('/api/User', async (req, res) => {
+    const userId = req.session.userId;
+    try {
+        const User = await user.findById(userId).select('name');
+        console.log(User)
+        res.json(User);
+    } catch (error) {
+        console.error(error.stack)
+        res.status(500).send('Error fetching user data');
+    }
+});
+
 app.post('/api/update-profile', upload.single('profilePicture'), async (req, res) => {
-    const { fullName, username, location, bio, profilePicture } = req.body;
+    const { fullName, username, location, bio,contactno, profilePicture } = req.body;
     const userId = req.session.userId;
     console.log(req.file)
 
@@ -120,6 +138,7 @@ app.post('/api/update-profile', upload.single('profilePicture'), async (req, res
             fullName,
             username,
             location,
+            contactno,
             bio,
             profilePicture:req.file.path,
         }, { new: true });

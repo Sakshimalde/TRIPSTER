@@ -2,7 +2,7 @@ const express=require("express");
 const app=express();
 const mongoose=require('mongoose');
 const emailvalidator=require('email-validator');
-const db_link='mongodb+srv://sakshimalde:7a4u5g14JdDJ3hYm@cluster0.hyyfr.mongodb.net/';
+const db_link='db link';
 mongoose.connect(db_link)
 .then(function(db){
     console.log(db);
@@ -56,6 +56,7 @@ const userSchema=mongoose.Schema(
             name: { type: String, required: true }
           }],
         username: { type: String},
+        contactno:{type: Number},
         fullName: { type: String }, 
         location: { type: String },  
         bio: { type: String }, 

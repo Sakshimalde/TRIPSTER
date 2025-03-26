@@ -86,6 +86,7 @@
                     <div class="profile-info">
                         <h2>${match.user.name}</h2>
                         <p><strong>username</strong> ${match.user.username}</p>
+                        <p><strong>contact no: </strong> ${match.user.contactno}</p>
                         <p><strong>score</strong> ${match.score}</p>
                         <button class="connect-button" data-user-id="${match.user._id}" data-status="connect">Connect</button>
                     </div>
@@ -125,46 +126,7 @@
         }
     }
 
-    // export async function getFriendRequests() {
-    //     try {
-    //         const response = await fetch('/requests');
-    //         const requests = await response.json();
-    //         const requestsList = document.getElementById('requests');
-    //         requestsList.innerHTML = '';
-    //         requests.forEach(request => {
-    //             const li = document.createElement('li');
-    //             li.textContent = `${request.sender.username} wants to connect`;
-    //             const acceptButton = document.createElement('button');
-    //             acceptButton.textContent = 'Accept';
-    //             acceptButton.onclick = () => acceptFriendRequest(request._id);
-    //             const rejectButton = document.createElement('button');
-    //             rejectButton.textContent = 'Reject';
-    //             rejectButton.onclick = () => rejectFriendRequest(request._id);
-    //             li.appendChild(acceptButton);
-    //             li.appendChild(rejectButton);
-    //             requestsList.appendChild(li);
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // }
 
-    // async function acceptFriendRequest(requestId) {
-    //     try {
-    //         const response = await fetch('/accept-request', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ requestId})
-    //         });
-    //         const data = await response.json();
-    //         alert(data.message);
-    //         getFriendRequests();
-    //         getFriends();
-    //         updateConnectButton(requestId, 'Disconnect');
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // }
 
     async function rejectFriendRequest(requestId) {
         try {

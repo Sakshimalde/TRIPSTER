@@ -21,6 +21,7 @@ document.getElementById('edit-profile-form').addEventListener('submit', async fu
     formData.append('fullName', document.getElementById('full-name').value);
     formData.append('username', document.getElementById('username').value);
     formData.append('location', document.getElementById('location').value);
+    formData.append('contactno', document.getElementById('contactno').value);
     formData.append('bio', document.getElementById('bio').value);
     
     // Get the file from the input and append it to the FormData
@@ -64,6 +65,7 @@ async function fetchUserDetails() {
             document.getElementById('full-name').value = userDetails.fullName || '';
             document.getElementById('username').value = userDetails.username || '';
             document.getElementById('location').value = userDetails.location || '';
+            document.getElementById('contactno').value = userDetails.contactno || '';
             document.getElementById('bio').value = userDetails.bio || '';
             
             // If a profile picture URL is provided, set it as the image source

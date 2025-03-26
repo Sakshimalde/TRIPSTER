@@ -15,10 +15,8 @@
                 <ul>
                     <li><a href="/profile.html">Profile</a></li>
                     <li><a href="/plan.html">Plan Trips</a></li>
-                    <li><a href="#">Messages</a></li>
                     <li><a href="/trips.html">My Trips</a></li>
-                    <li><a href="#">Settings</a></li>
-                    <li><a href="#">Logout</a></li>
+                    <li><a href="http://localhost:3000/logout">Logout</a></li>
                 </ul>
             </nav>
         </aside>    
@@ -26,7 +24,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <header>
-                <h1>Welcome, [User's Name]</h1>
+                <h1>Welcome,  <span id="userName"> </span></h1>
                 <p>Your travel dashboard to manage and explore trips.</p>
             </header>
 
@@ -34,26 +32,37 @@
                 <div class="card">
                     <h3>Upcoming Trips</h3>
                     <p>See and manage your planned journeys.</p>
-                    <button class="request" id="requestsButton">view requests</button>
+                    <button class="request" id="requestsButton"><b>View requests</b></button>
 
                 </div>
                 <div class="card">
                     <h3>Recent Messages</h3>
                     <p>Check your latest conversations with travelers.</p>
-                    <a href="/friends.html">FRIENDS</a>
-                </div>
-                <div class="card">
-                    <h3>Explore Destinations</h3>
-                    <p>Discover new places and find travel companions.</p>
-                    <a href="#">Explore</a>
+                    <!-- <a href="/friends.html">FRIENDS</a> -->
+                    <button onclick="window.location.href='/friends.html'"><b>FRIENDS</b></button>
                 </div>
             </section>
         </main>
-    </div>
+    </div>  
     <div id="requestsContainer" style="display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 10px; z-index: 1000;">
         <ul id="requestsList"></ul>
     </div>
     <script>
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+                 // Replace with the actual user ID
+            try {
+                const response = await fetch('/api/User');
+                const User = await response.json();
+                document.getElementById('userName').textContent = User.name;
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        });
+
+
+
+
         // Function to fetch and display friend requests
 async function getFriendRequests() {
     const requestsContainer = document.getElementById('requestsContainer');
